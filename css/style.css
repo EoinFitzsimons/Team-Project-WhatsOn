@@ -18,8 +18,8 @@
 /*Home Page styling*/
 
 .map-div {
-    height: 1920px;
-    width: 100%;
+    height: 100vh;
+    width: 100%vw;
     border: solid var(--clr-blue) 5px;
     background-image: url("tempMap.png");
     margin: 0 auto;
