@@ -1,8 +1,10 @@
-:root{  /* set variables as colours, will save time when the colours in the page has to change*/
-    --clr-blue:rgb(83, 201, 224); /*this is how a variable in css must be set up*/
+:root {
+    /* set variables as colours, will save time when the colours in the page has to change*/
+    --clr-blue: rgb(83, 201, 224);
+    /*this is how a variable in css must be set up*/
     --clr-black: black;
     --clr-bright: yellow;
-    --clr-white:white;
+    --clr-white: white;
 }
 
 *,
@@ -13,12 +15,9 @@
     padding: 0;
 }
 
-
-
-
 /*Home Page styling*/
 
-.map-div{
+.map-div {
     height: 1920px;
     width: 100%;
     border: solid var(--clr-blue) 5px;
@@ -26,25 +25,25 @@
     margin: 0 auto;
 }
 
-.nav-bar{
+.nav-bar {
     margin-top: 20px;
     width: 100%;
     height: 100px;
-    
+
 }
 
-.item{
+.item {
     width: 200px;
     height: 100%;
     background-color: var(--clr-blue);
     border: solid var(--clr-white) 5px;
     text-align: center;
     border-radius: 20px;
-   
+
 }
 
 
-.nav-bar{
+.nav-bar {
     position: sticky;
     display: flex;
     justify-content: space-evenly;
@@ -55,67 +54,62 @@
 .forming {
     height: 700px;
     width: 500px;
-    border:solid var(--clr-bright) 5px;
+    border: solid var(--clr-bright) 5px;
     margin: 0 auto;
     margin-top: 50px;
-    
+
 }
 
 /*Positioning of the elements for login/signup */
 
-.forming{
-    
+.forming {
+
     display: grid;
     grid-template-columns: 100px 100px 100px 100px 100px;
     grid-template-rows: 100px 100px 100px 100px 100px 100px;
 }
 
-.labels{
+.labels {
     text-align: center;
     line-height: 100px;
 }
 
-.sign{
-    grid-row:1/2;
+.sign {
+    grid-row: 1/2;
     grid-column: 2/3;
     text-align: center;
     line-height: 100px;
 }
 
-.emailS{
+.emailS {
     background-color: var(--clr-blue);
 }
 
-.emailS{
+.emailS {
     grid-row: 2/3;
     grid-column: 2/3;
 }
 
-.emailtf{
+.emailtf {
     grid-row: 3/4;
     grid-column: 2/5;
 }
 
-.passwordl{
+.passwordl {
     background-color: var(--clr-blue);
 }
 
-.passwordl{
-    grid-row:4/5;
+.passwordl {
+    grid-row: 4/5;
     grid-column: 2/3;
 }
 
-.passwordtf{
+.passwordtf {
     grid-row: 5/6;
     grid-column: 2/5;
 }
 
-#submit{
+#submit {
     grid-row: 6/7;
     grid-column: 2/5;
 }
-
-
-
-
-
