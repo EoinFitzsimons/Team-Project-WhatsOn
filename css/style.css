@@ -1,9 +1,9 @@
 :root {
     /* set variables as colours, will save time when the colours in the page has to change*/
-    --clr-blue: rgb(83, 201, 224);
+    --clr-blue: #bee1ff;
     /*this is how a variable in css must be set up*/
     --clr-black: black;
-    --clr-bright: yellow;
+    --clr-bright: #ffff00;
     --clr-white: white;
 }
 
@@ -19,7 +19,7 @@
 
 .map-div {
     height: 100vh;
-    width: 100%vw;
+    width: 100vw;
     border: solid var(--clr-blue) 5px;
     background-image: url("tempMap.png");
     margin: 0 auto;
@@ -36,10 +36,13 @@
     width: 200px;
     height: 100%;
     background-color: var(--clr-blue);
-    border: solid var(--clr-white) 5px;
+    border: solid var(--clr-white) 15px;
     text-align: center;
+    font-size: 200%;
     border-radius: 20px;
-
+    font-family: "Itim", cursive;
+    font-weight: 400;
+    font-style: normal;
 }
 
 
@@ -47,6 +50,11 @@
     position: sticky;
     display: flex;
     justify-content: space-evenly;
+}
+
+.item a {
+    color: var(--clr-white);
+    text-decoration: none;
 }
 
 /*Login Styling*/

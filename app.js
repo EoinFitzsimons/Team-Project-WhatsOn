@@ -9,6 +9,7 @@ app.listen(3000); //sets the port number to 3000
 
 //middle ware to access static files
 app.use(express.static('css'));
+app.use(express.static('images'));
 
 app.use(morgan('dev'));
 
