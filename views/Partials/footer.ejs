@@ -2,6 +2,8 @@
   <script>
     // Variable to store the currently open modal
     var currentModal = null;
+    var form = document.getElementById('authForm');
+
 
     function toggleModal(modalId, event) {
       // If a modal is currently open, close it
@@ -64,20 +66,18 @@
     }
 
     var isSignupMode = true;
+    var isLoggedIn = false; //track the login status
 
     function switchMode() {
-      var form = document.getElementById('authForm');
       var submitButton = document.getElementById('submit');
       var switchButton = document.getElementById('switchMode');
 
       if (isSignupMode) {
         // Switch to login mode
-        form.action = "/submit-login";
         submitButton.value = "Login";
         switchButton.textContent = "Switch to Sign Up";
       } else {
         // Switch to signup mode
-        form.action = "/submit-signup";
         submitButton.value = "Sign Up";
         switchButton.textContent = "Switch to Login";
       }
@@ -85,29 +85,55 @@
       isSignupMode = !isSignupMode;
     }
 
+    form.addEventListener('submit', function (event) {
+      event.preventDefault(); // This will prevent the form from being submitted
+      closeAllModals(); // close the modal
+      isLoggedIn = true; // Set isLoggedIn to true after successful login/signup
+      // function to be executed elsewhere here
+    });
+
+    function toggleModal(modalId, event) {
+      if (isLoggedIn) {
+        // If the user is logged in, show the events on the map
+        showFollowedEventsOnMap();
+      } else {
+        // If the user is not logged in, open the modal
+        var modal = document.getElementById(modalId);
+        modal.style.display = "block";
+      }
+    }
+
+    function showFollowedEventsOnMap() {
+      //open up the information on the events that have the followed status which is linked to the user.
+      console.log("showFollowedEventsOnMap function called");
+      var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+      document.documentElement.style.setProperty('--clr-dark', randomColor);// sets random bg colour for now to test
+    }
+
+
     function moveCrosshair() {
-  // Get the crosshair div
-  var crosshair = document.querySelector('.crosshair');
+      // Get the crosshair div
+      var crosshair = document.querySelector('.crosshair');
 
-  // Get the size of .map-div
-  var mapDiv = document.querySelector('.map-div');
-  var mapDivWidth = mapDiv.offsetWidth;
-  var mapDivHeight = mapDiv.offsetHeight;
+      // Get the size of .map-div
+      var mapDiv = document.querySelector('.map-div');
+      var mapDivWidth = mapDiv.offsetWidth;
+      var mapDivHeight = mapDiv.offsetHeight;
 
-  // Get the height of the navbar
-  var navbarHeight = document.querySelector('.nav-bar').offsetHeight;
+      // Get the height of the navbar
+      var navbarHeight = document.querySelector('.nav-bar').offsetHeight;
 
-  // Generate random coordinates within .map-div, below the navbar
-  var randomX = Math.floor(Math.random() * mapDivWidth);
-  var randomY = Math.floor(Math.random() * (mapDivHeight - navbarHeight) + navbarHeight);
+      // Generate random coordinates within .map-div, below the navbar
+      var randomX = Math.floor(Math.random() * mapDivWidth);
+      var randomY = Math.floor(Math.random() * (mapDivHeight - navbarHeight) + navbarHeight);
 
-  // Position the crosshair at the random coordinates
-  crosshair.style.left = randomX + 'px';
-  crosshair.style.top = randomY + 'px';
+      // Position the crosshair at the random coordinates
+      crosshair.style.left = randomX + 'px';
+      crosshair.style.top = randomY + 'px';
 
-  // Make the crosshair visible
-  crosshair.style.visibility = 'visible';
-}
+      // Make the crosshair visible
+      crosshair.style.visibility = 'visible';
+    }
 
   </script>
 
