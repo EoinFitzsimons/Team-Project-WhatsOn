@@ -4,8 +4,8 @@
     var currentModal = null;
     var form = document.getElementById('authForm');
 
-
     function toggleModal(modalId, event) {
+      console.log("toggleModal function called");
       // If a modal is currently open, close it
       if (currentModal) {
         currentModal.style.display = "none";
@@ -69,6 +69,7 @@
     var isLoggedIn = false; //track the login status
 
     function switchMode() {
+      
       var submitButton = document.getElementById('submit');
       var switchButton = document.getElementById('switchMode');
 
@@ -85,23 +86,71 @@
       isSignupMode = !isSignupMode;
     }
 
-    form.addEventListener('submit', function (event) {
-      event.preventDefault(); // This will prevent the form from being submitted
-      closeAllModals(); // close the modal
-      isLoggedIn = true; // Set isLoggedIn to true after successful login/signup
-      // function to be executed elsewhere here
-    });
+    var isLoggedIn = false; //track the login status
 
-    function toggleModal(modalId, event) {
-      if (isLoggedIn) {
-        // If the user is logged in, show the events on the map
-        showFollowedEventsOnMap();
-      } else {
-        // If the user is not logged in, open the modal
-        var modal = document.getElementById(modalId);
-        modal.style.display = "block";
+form.addEventListener('submit', function (event) {
+  event.preventDefault(); // This will prevent the form from being submitted
+  closeAllModals(); // close the modal
+  // function to be executed elsewhere here
+  isLoggedIn = true;
+});
+
+function toggleFollowingModal(modalId, event) {
+  if (isLoggedIn) {
+    // If the user is logged in, show the events on the map
+    showFollowedEventsOnMap();
+  } else {
+    // If the user is not logged in, open the modal
+    // If a modal is currently open, close it
+    if (currentModal) {
+        currentModal.style.display = "none";
       }
-    }
+
+      // Open the new modal
+      currentModal = document.getElementById(modalId);
+      currentModal.style.display = "block";
+
+      // Get the position of the button
+      var button = event.target;
+      var rect = button.getBoundingClientRect();
+
+      // Account for the border
+      var border = parseInt(getComputedStyle(button).borderWidth);
+
+      // Calculate the bottom of the button, accounting for the border
+      var buttonBottom = rect.bottom - border;
+
+      // Position the modal below the button
+      currentModal.style.top = (buttonBottom + window.scrollY) + "px";
+
+      // Center the modal horizontally
+      currentModal.style.left = '50%';
+      currentModal.style.transform = 'translateX(-50%)';
+      // If the modal extends off the right edge of the screen, move it back
+      var modalRight = currentModal.offsetLeft + currentModal.offsetWidth;
+      if (modalRight > window.innerWidth) {
+        currentModal.style.left = (window.innerWidth - currentModal.offsetWidth) + "px";
+      }
+
+      // Calculate the bottom of the button, accounting for the border
+      var buttonBottom = rect.bottom - border;
+
+      // Position the modal below the button
+      currentModal.style.top = (buttonBottom + window.scrollY) + "px";
+
+      // Slide the modal down to its final position below the button
+      var finalTop = buttonBottom + window.scrollY;
+      var currentTop = rect.top + window.scrollY;
+      var intervalId = setInterval(function () {
+        if (currentTop < finalTop) {
+          currentTop++;
+          currentModal.style.top = currentTop + "px";
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 5); // Adjust this value to change the speed of the animation
+  }
+}
 
     function showFollowedEventsOnMap() {
       //open up the information on the events that have the followed status which is linked to the user.
