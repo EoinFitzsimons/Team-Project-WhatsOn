@@ -213,7 +213,6 @@
 
 //CJ- Dynamic JSON data for markers and info windows
           //CJ- Multiple Markers with Info Windows from JSON Data
-          //CJ- Multiple Markers with Info Windows from JSON Data
           fetch('/eventsData.json')
           //CJ- convert data to JSON
           .then((response) => response.json())
@@ -221,76 +220,83 @@
           .then((data) => {
           //CJ- loop through data array
               data.forEach((eventData, index) => {
-              //CJ- create new marker for event
-                  const marker = new google.maps.Marker({
-                      position: { lat: eventData.lat, lng: eventData.lon },
-                      map,
-                      title: eventData.eventName,
-                      icon: {
-                          url: "Crosshair.png",
-                          scaledSize: new google.maps.Size(48, 48),
-                      },
-                      animation: google.maps.Animation.DROP,
-                  });
-                  // CJ- Function to handle the click event of the Read more button
-                  window.expandText = function(id) {
-                      //CJ- display the hidden text
-                      document.getElementById(id).style.display = 'inline';
-                      //CJ- hide the read more button
-                      document.getElementById('btn-' + id).style.display = 'none';
-                      //CJ- display the collapse button
-                      document.getElementById('collapse-btn-' + id).style.display = 'inline';
-                  }
+              //CJ- Check if lat and lng are numbers
+              if (typeof eventData.lat === 'number' && typeof eventData.lng === 'number') {
+                  //CJ- create new marker for event
+                    const marker = new google.maps.Marker({
+                        position: { lat: eventData.lat, lng: eventData.lon },
+                        map,
+                        title: eventData.eventName,
+                        icon: {
+                            url: "Crosshair.png",
+                            scaledSize: new google.maps.Size(48, 48),
+                        },
+                        animation: google.maps.Animation.DROP,
+                    });
+                    // CJ- Function to handle the click event of the Read more button
+                    window.expandText = function(id) {
+                        //CJ- display the hidden text
+                        document.getElementById(id).style.display = 'inline';
+                        //CJ- hide the read more button
+                        document.getElementById('btn-' + id).style.display = 'none';
+                        //CJ- display the collapse button
+                        document.getElementById('collapse-btn-' + id).style.display = 'inline';
+                    }
 
-                  // CJ- Function to handle the click event of the Collapse button
-                  window.collapseText = function(id) {
-                      //CJ- hide the extra text
-                      document.getElementById(id).style.display = 'none';
-                      //CJ- display the read more button
-                      document.getElementById('btn-' + id).style.display = 'inline';
-                      //CJ- hide the collapse button
-                      document.getElementById('collapse-btn-' + id).style.display = 'none';
-                  }
-                  // CJ- Create an info window for the event
-                  const infowindow = new google.maps.InfoWindow({
-                      content: `
-                          <div class="info-window-content">
-                              <h3>${eventData.eventName}</h3>
-                              <p><strong>Group Name:</strong> ${eventData.groupName}</p> 
-                              <p><strong>Event Time:</strong> ${new Date(eventData.eventTime).toLocaleString()}</p> 
-                              <p><strong>Event End Time:</strong> ${new Date(eventData.eventEndTime).toLocaleString()}</p>
-                              <p><strong>Location:</strong> ${eventData.locationInfo}</p> <!-- Location info -->
-                              <p>${eventData.eventDetails.substring(0, 100)} <!-- Displays the first 100 characters -->
-                                  <span id="extra-text-${eventData.eventId}" class="extra-text">${eventData.eventDetails.substring(100)}</span> 
-                                  <button id="btn-extra-text-${eventData.eventId}" class="expand-collapse-btn" onclick="window.expandText('extra-text-${eventData.eventId}');">Read more</button>
-                                  <button id="collapse-btn-extra-text-${eventData.eventId}" class="expand-collapse-btn" style="display: none;" onclick="window.collapseText('extra-text-${eventData.eventId}');">Collapse</button>
-                              </p>
-                              <img src="${eventData.eventImage}" alt="Event Image"> 
-                          </div>
-                      `,
-                  });
-                  // CJ- Add an event listener to the marker to open the info window
-                  marker.addListener("click", () => {
-                      // Close the current info window if it's open
-                      if (currentInfoWindow) {
-                          currentInfoWindow.close();
-                      }
-                      //CJ- open the info window on the map at the marker location
-                      infowindow.open(map, marker);
-                      // Set the current info window to the newly opened one
-                      currentInfoWindow = infowindow;
-                  });
-              });
+                    // CJ- Function to handle the click event of the Collapse button
+                    window.collapseText = function(id) {
+                        //CJ- hide the extra text
+                        document.getElementById(id).style.display = 'none';
+                        //CJ- display the read more button
+                        document.getElementById('btn-' + id).style.display = 'inline';
+                        //CJ- hide the collapse button
+                        document.getElementById('collapse-btn-' + id).style.display = 'none';
+                    }
+                    // CJ- Create an info window for the event
+                    const infowindow = new google.maps.InfoWindow({
+                        content: `
+                            <div class="info-window-content">
+                                <h3>${eventData.eventName}</h3>
+                                <p><strong>Group Name:</strong> ${eventData.groupName}</p> 
+                                <p><strong>Event Time:</strong> ${new Date(eventData.eventTime).toLocaleString()}</p> 
+                                <p><strong>Event End Time:</strong> ${new Date(eventData.eventEndTime).toLocaleString()}</p>
+                                <p><strong>Location:</strong> ${eventData.locationInfo}</p> <!-- Location info -->
+                                <p>${eventData.eventDetails.substring(0, 100)} <!-- Displays the first 100 characters -->
+                                    <span id="extra-text-${eventData.eventId}" class="extra-text">${eventData.eventDetails.substring(100)}</span> 
+                                    <button id="btn-extra-text-${eventData.eventId}" class="expand-collapse-btn" onclick="window.expandText('extra-text-${eventData.eventId}');">Read more</button>
+                                    <button id="collapse-btn-extra-text-${eventData.eventId}" class="expand-collapse-btn" style="display: none;" onclick="window.collapseText('extra-text-${eventData.eventId}');">Collapse</button>
+                                </p>
+                                <img src="${eventData.eventImage}" alt="Event Image"> 
+                            </div>
+                        `,
+                    });
+                    // CJ- Add an event listener to the marker to open the info window
+                    marker.addListener("click", () => {
+                        // Close the current info window if it's open
+                        if (currentInfoWindow) {
+                            currentInfoWindow.close();
+                        }
+                        //CJ- open the info window on the map at the marker location
+                        infowindow.open(map, marker);
+                        // Set the current info window to the newly opened one
+                        currentInfoWindow = infowindow;
+                    });
+                //CJ- log error message if lat or lng are not numbers
+                }else{
+                console.warn(`Invalid lat or lng value for event at index ${index}`);
+                }      
+                });
                 //CJ- click event listener added to the map to close the info window when the map is clicked
               map.addListener('click', function() {
                   if (currentInfoWindow) {
                       currentInfoWindow.close();
                   }
               });
-          })
-          .catch((error) => {
-              console.error("Error fetching JSON data:", error);
-          });
+            })
+            //CJ- log error message if JSON data cannot be fetched
+            .catch((error) => {
+                console.error("Error fetching JSON data:", error);
+            });
 
 
         // CJ- Check if geolocation is available
@@ -309,7 +315,7 @@
 //CJ- TO-DO- get city from userLocation (lat/long) and store as global variable
 
               // CJ- Center the map to user's location
-              loadMap(userLocation);
+              // loadMap(userLocation);
 
               // CJ- Add a marker for user's location
               const userMarker = new google.maps.Marker({
