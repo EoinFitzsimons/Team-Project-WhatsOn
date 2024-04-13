@@ -6,10 +6,12 @@ import bcrypt from 'bcrypt';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import env from 'dotenv';
 
+env.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+const con = process.env.mapApiKey;
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -36,6 +38,10 @@ app.get('/', async (req, res) => {
     console.error(`Error fetching data: ${error}`);
     res.status(500).send('Error fetching data');
   }
+});
+
+app.get('/api-key', (req, res) => {
+  res.json({ apiKey: con });
 });
 
 app.get('/users', (req, res) => {
