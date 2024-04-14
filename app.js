@@ -25,13 +25,14 @@ app.use(bodyParser.json());
 app.use(express.json()); //this is used to parse the json data
 
 
-const generateJWTSecret = () => {
-  return crypto.randomBytes(64).toString("hex");
-}
+const generateTokens = (email) => {
+  const accessToken = jwt.sign({ email }, jwtKey, { expiresIn: '1h' });
+  const refreshToken = jwt.sign({ email }, refreshTokenSecretKey, { expiresIn: '7d' });
+  return { accessToken, refreshToken };
+};
 
-const jwtSecret = generateJWTSecret();
-
-
+const jwtKey = "your-access-token-secret-key";
+const refreshTokenSecretKey = "your-refresh-token-secret-key";
 
 app.listen(port, () => {
   console.log("Running on port ", port);
@@ -140,10 +141,10 @@ app.post("/users/register", async (req, res) => {
     // Add the new user
     users.push(newUser);
 
-    // Generate JWT token
-    const token = jwt.sign({ email: newUser.email }, jwtSecret, { expiresIn: "1h" });
+    // Generate tokens
+    const { accessToken, refreshToken } = generateTokens(newUser.email);
 
-    // Write the updated users and token back to the file
+    // Write the updated users and refresh token back to the file
     try {
       fs.writeFileSync(
         path.join(__dirname, "User Details", "users.json"),
@@ -151,10 +152,10 @@ app.post("/users/register", async (req, res) => {
         "utf8"
       );
 
-      // Append user token to a separate JSON file
+      // Append user refresh token to a separate JSON file
       fs.writeFileSync(
-        path.join(__dirname, "User Details", "userTokens.json"),
-        JSON.stringify({ email: newUser.email, token }),
+        path.join(__dirname, "User Details", "refreshTokens.json"),
+        JSON.stringify({ email: newUser.email, refreshToken }),
         "utf8",
         { flag: 'a' } // Append mode
       );
@@ -167,7 +168,7 @@ app.post("/users/register", async (req, res) => {
       return;
     }
 
-    res.json({ success: true, message: "Account created successfully.", token });
+    res.json({ success: true, message: "Account created successfully.", accessToken, refreshToken });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -202,9 +203,11 @@ app.post("/users/login", async (req, res) => {
 
   try {
     if (await bcrypt.compare(password, user.password)) {
-      // If password matches, generate JWT token
-      const token = jwt.sign({ email: user.email }, jwtSecret, { expiresIn: "1h" });
-      res.json({ success: true, token });
+      // If password matches, generate access and refresh tokens
+      const { accessToken, refreshToken } = generateTokens(user.email);
+
+      // Send both tokens in the response
+      res.json({ success: true, accessToken, refreshToken });
     } else {
       res.status(401).json({ success: false, message: "Incorrect password" });
     }
