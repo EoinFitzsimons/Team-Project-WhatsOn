@@ -1,4 +1,32 @@
 <script>
+
+
+window.onload = function () {
+  const encodedApiKey = window.prompt("Please enter your name:", "");
+  // Now you can decode the API key
+  fetch("http://localhost:3000/decrypt", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ encryptedApiKey: encodedApiKey }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const apiKey = data.decryptedApiKey;
+      // Now you can use the decoded API key in your application
+      loadGoogleMaps(apiKey);
+    })
+    .catch((error) => console.error("Error:", error));
+};
+
+function loadGoogleMaps(apiKey) {
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&map_ids=13185b1ffbbba3af&callback=initMap`;
+  script.async = true;
+  document.body.appendChild(script);
+}
+
   //  CJ- using callback function “initMap” from Google Map Script API URL.  This ensures the javascript will only run once the API has finished loading, otherwise it would run before map exists.
   function initMap() {
     // <!-- CJ- targeting "map-div" to load map -->
@@ -465,8 +493,9 @@
     });
 
     //CJ- Adds a click event listener to the random button to display a random event info window
-    //CJ- SelectS the button inside the div with class 'randomTest'
-    let btn = document.querySelector(".randomTest button");
+
+    // EF Select the button with class 'item random'
+    let btn = document.querySelector(".item.random");
     //CJ- Add a click event listener to the button
     btn.addEventListener("click", function () {
       // CJ- Select a random index from the events array to display an event
@@ -585,4 +614,4 @@
 
 </script> -->
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBo9c5JnECXrfMnYkVA2TSyStdrbZ3TO-w&map_ids=13185b1ffbbba3af&callback=initMap"></script>
+

@@ -29,7 +29,7 @@ app.listen(port, () => {
 
 const algorithm = "aes-256-ctr";
 const secretKey =
-  "01dcfa406f6f7253d0a74c790987ff37c6866fa9226ad76cfe33373b9f3dd7af"; // replace with your 64-character secret key
+  "e497a267700bf5bba32f5984d6bc07e7077ac4c9e26efef61a115ee4084417fc"; // replace with your 64-character secret key
 
 function decrypt(encryptedApiKey, secretKey) {
   const key = Buffer.from(secretKey, "hex");

@@ -1,23 +1,5 @@
 <footer>
   <script>
-    window.onload = function () {
-      const encodedApiKey = window.prompt("Please enter your name:", "");
-      // Now you can decode the API key
-      fetch("https://myserver.com/decrypt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ encryptedApiKey: encodedApiKey }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const apiKey = data.decryptedApiKey;
-          // Now you can use the decoded API key in your application
-        })
-        .catch((error) => console.error("Error:", error));
-    };
-
     // Variable to store the currently open modal
     var currentModal = null;
 
@@ -123,5 +105,4 @@
     }
   </script>
   <%- include('following') %> <%- include('contact') %> <%- include('random') %>
-  <%- include('api')%>
 </footer>
