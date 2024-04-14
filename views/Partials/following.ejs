@@ -140,12 +140,19 @@
           followedGroupsList.appendChild(newGroup);
         } else {
           console.log("The user is already following this group.");
+        } if(!followedGroupsList.hasChildNodes()){
+          const noGroupsMessage = document.createElement("li");
+          noGroupsMessage.textContent = "Not following any groups";
+          followedGroupsList.appendChild(noGroupsMessage);
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-      })
-      .finally(() => {
+      });
+      
+
+      function notFollowingGroups()
+      {
         const followedGroupsList =
           document.getElementById("followedGroupsList");
         if (!followedGroupsList.hasChildNodes()) {
@@ -153,6 +160,7 @@
           noGroupsMessage.textContent = "Not following any groups";
           followedGroupsList.appendChild(noGroupsMessage);
         }
-      });
+      }
+
   }
 </script>
