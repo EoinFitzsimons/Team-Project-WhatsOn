@@ -4,10 +4,10 @@
   var users = {};
   var userEmail = null;
   function followingButtonClicked() {
-    if (isLoggedIn) {
+    if (isLoggedIn==true) {
       // User is logged in, show following
       toggleModal("followingModal", event);
-    } else {
+    } else if(isLoggedIn==false) {
       // User is not logged in, show the  signup/login modal
       toggleModal("userModal", event);
     }
@@ -110,17 +110,18 @@
         followButton.style.display = "none";
       }
     });
-  function follow(eventData) {
+
+  function follow(event) {
     const email = userEmail;
-    const groupName = eventData.groupName;
-    const groupLink = eventData.groupLink;
+    const groupName = event.groupName;
+    const groupLink = event.groupLink;
 
     fetch("/followGroup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, groupName, groupLink }),
+      body: JSON.stringify({ email: email, groupName:groupName, groupLink:groupLink }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -128,13 +129,13 @@
           console.log("The group has been followed!");
 
           const followedGroupsList =
-            document.getElementById("followedGroupsList");
+            document.getElementById("followingModalContent");
 
           // Create a new li element
-          const newGroup = document.createElement("li");
+          const newGroup =+ document.createElement("li");
 
           // Set the text of the new li element to the group name
-          newGroup.textContent = groupName;
+          
 
           // Append the new li element to the ul
           followedGroupsList.appendChild(newGroup);
