@@ -4,10 +4,10 @@
   var users = {};
   var userEmail = null;
   function followingButtonClicked() {
-    if (isLoggedIn==true) {
+    if (isLoggedIn == true) {
       // User is logged in, show following
       toggleModal("followingModal", event);
-    } else if(isLoggedIn==false) {
+    } else if (isLoggedIn == false) {
       // User is not logged in, show the  signup/login modal
       toggleModal("userModal", event);
     }
@@ -88,14 +88,14 @@
   }
 
   function onLogin() {
-  // Update the visibility of all follow buttons
-  for (let id in followButtons) {
-    const followButton = document.getElementById(`follow-btn-${id}`);
-    if (followButton) {
-      followButton.style.display = 'inline';
+    // Update the visibility of all follow buttons
+    for (let id in followButtons) {
+      const followButton = document.getElementById(`follow-btn-${id}`);
+      if (followButton) {
+        followButton.style.display = "inline";
+      }
     }
   }
-}
 
   fetch("/isLoggedIn")
     .then((response) => response.json())
@@ -121,47 +121,56 @@
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: email, groupName:groupName, groupLink:groupLink }),
+      body: JSON.stringify({
+        email: email,
+        groupName: groupName,
+        groupLink: groupLink,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           console.log("The group has been followed!");
 
-          const followedGroupsList =
-            document.getElementById("followingModalContent");
+          const followedGroupsList = document.getElementById(
+            "followingModalContent"
+          );
 
           // Create a new li element
-          const newGroup =+ document.createElement("li");
+          const newGroup = document.createElement("li");
 
           // Set the text of the new li element to the group name
-          
+          newGroup.textContent = groupName;
 
           // Append the new li element to the ul
           followedGroupsList.appendChild(newGroup);
         } else {
           console.log("The user is already following this group.");
-        } if(!followedGroupsList.hasChildNodes()){
-          const noGroupsMessage = document.createElement("li");
-          noGroupsMessage.textContent = "Not following any groups";
-          followedGroupsList.appendChild(noGroupsMessage);
         }
+
+        // Check if the followedGroupsList has any child nodes
+        notFollowingGroups();
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-      
-
-      function notFollowingGroups()
-      {
-        const followedGroupsList =
-          document.getElementById("followedGroupsList");
-        if (!followedGroupsList.hasChildNodes()) {
-          const noGroupsMessage = document.createElement("li");
-          noGroupsMessage.textContent = "Not following any groups";
-          followedGroupsList.appendChild(noGroupsMessage);
-        }
-      }
-
   }
+
+  function notFollowingGroups() {
+    const followedGroupsList = document.getElementById("followedGroupsList");
+    if (!followedGroupsList.hasChildNodes()) {
+      const noGroupsMessage = document.createElement("li");
+      noGroupsMessage.textContent = "Not following any groups";
+      followedGroupsList.appendChild(noGroupsMessage);
+    }
+  }
+
+  // Add event listener to the modal content or a specific element within it
+  document.getElementById("followingModalContent")
+    .addEventListener("click", function (event) {
+      // Check if the clicked element is a follow button or any other interactive element
+      if (event.target.classList.contains("follow-button")) {
+        follow(event.target.dataset); // Pass necessary data to the follow function
+      }
+    });
 </script>
