@@ -62,7 +62,7 @@
   border: none;
   cursor: pointer;
   outline: none;
-  border-radius: 5px; 
+  border-radius: 5px;
 }
 
 /* CJ- Hides the extra text by default */
@@ -76,7 +76,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-end;
-  width: 200px; 
+  width: 200px;
 }
 
 /* CJ- Source button */
@@ -106,7 +106,7 @@
   border: none;
   cursor: pointer;
   outline: none;
-  padding: 2px; 
+  padding: 2px;
   text-decoration: none;
   width: fit-content;
   margin-top: 10px;
@@ -126,7 +126,7 @@
   border: none;
   cursor: pointer;
   outline: none;
-  padding: 2px; 
+  padding: 2px;
   text-decoration: none;
   width: fit-content;
   margin-top: 10px;
@@ -141,8 +141,35 @@
 }
 
 /* CJ- consistant button borders */
-.toggle-btn, .expand-collapse-btn, .directions-btn, .source-btn {
+.toggle-btn,
+.expand-collapse-btn,
+.directions-btn,
+.source-btn {
   border: 1px solid var(--clr-blue);
+}
+
+@media only screen and (max-width: 600px) {
+  /*CJ- Adjusting the grid layout for smaller screens */
+  .info-window-content {
+    grid-template-columns: 1fr;
+  }
+
+  /*CJ- Adjusting the image and source button container for smaller screens */
+  .image-source-container {
+    width: 100%;
+    align-items: center;
+  }
+
+  /*CJ- Adjusting the text container padding for smaller screens */
+  .text-container {
+    padding-right: 0;
+  }
+
+  /*CJ- Adjusting the button container for smaller screens */
+  .btn-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 /*CJ- nav.ejs styling*/
