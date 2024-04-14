@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -23,6 +24,15 @@ app.use(express.static("Data Fetching")); //CJ- loads all of the static files fr
 app.use(bodyParser.json());
 app.use(express.json()); //this is used to parse the json data
 
+
+const generateJWTSecret = () => {
+  return crypto.randomBytes(64).toString("hex");
+}
+
+const jwtSecret = generateJWTSecret();
+
+
+
 app.listen(port, () => {
   console.log("Running on port ", port);
 });
@@ -30,6 +40,17 @@ app.listen(port, () => {
 const algorithm = "aes-256-ctr";
 const secretKey =
   "01dcfa406f6f7253d0a74c790987ff37c6866fa9226ad76cfe33373b9f3dd7af"; // replace with your 64-character secret key
+
+
+  function verifyToken(req, res, next) {
+    const token = req.header["auth-token"];
+    if (!token) return res.status(401).send("Access Denied");
+    jwt.verify(token, jwtSecret, (err, user) => {
+      if (err) return res.status(403).send("Invalid Token");
+      req.user = user;
+      next();
+    });
+  }
 
 function decrypt(encryptedApiKey, secretKey) {
   const key = Buffer.from(secretKey, "hex");
@@ -119,12 +140,23 @@ app.post("/users/register", async (req, res) => {
     // Add the new user
     users.push(newUser);
 
-    // Write the updated users back to the file
+    // Generate JWT token
+    const token = jwt.sign({ email: newUser.email }, jwtSecretKey, { expiresIn: "1h" });
+
+    // Write the updated users and token back to the file
     try {
       fs.writeFileSync(
-        "./User Details/users.json",
+        path.join(__dirname, "User Details", "users.json"),
         JSON.stringify(users),
         "utf8"
+      );
+
+      // Append user token to a separate JSON file
+      fs.writeFileSync(
+        path.join(__dirname, "User Details", "userTokens.json"),
+        JSON.stringify({ email: newUser.email, token }),
+        "utf8",
+        { flag: 'a' } // Append mode
       );
     } catch (error) {
       console.error(error);
@@ -134,6 +166,8 @@ app.post("/users/register", async (req, res) => {
       });
       return;
     }
+
+    res.json({ success: true, message: "Account created successfully.", token });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -142,10 +176,12 @@ app.post("/users/register", async (req, res) => {
     console.log(error);
     return;
   }
-  res.json({ success: true, message: "Account created successfully." });
 });
 
 app.post("/users/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Fetch user from database (you can use your own database logic here)
   let users;
   try {
     const fileContent = fs.readFileSync(
@@ -155,24 +191,26 @@ app.post("/users/login", async (req, res) => {
     users = JSON.parse(fileContent);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Cannot find users file");
-    return;
+    return res.status(500).json({ success: false, message: "Cannot find users file" });
   }
-  const user = users.find((user) => user.email === req.body.email);
 
-  if (user == null) {
-    return res.status(400).send("Cannot find user");
+  const user = users.find((user) => user.email === email);
+
+  if (!user) {
+    return res.status(401).json({ success: false, message: "User not found" });
   }
+
   try {
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      res.json({ success: true });
+    if (await bcrypt.compare(password, user.password)) {
+      // If password matches, generate JWT token
+      const token = jwt.sign({ email: user.email }, jwtSecretKey, { expiresIn: "1h" });
+      res.json({ success: true, token });
     } else {
-      res.json({ success: false, message: "Password incorrect" });
+      res.status(401).json({ success: false, message: "Incorrect password" });
     }
-  } catch {
-    res
-      .status(500)
-      .send({ success: false, message: "An error occured during login" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "An error occurred during login" });
   }
 });
 
