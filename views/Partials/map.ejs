@@ -420,9 +420,11 @@
                 <div class="image-source-container">
                   <img src="${eventData.eventImage}" alt="Event Image"> 
                   <div class="btn-container">
-                    <a href="https://www.google.com/maps/dir//${eventData.lat},${
-                              eventData.lon
-                            }" target="_blank" class="directions-btn">Directions</a>
+                    <a href="https://www.google.com/maps/dir//${
+                      eventData.lat
+                    },${
+              eventData.lon
+            }" target="_blank" class="directions-btn">Directions</a>
                     <a href="${
                       eventData.eventUrl
                     }" target="_blank" class="source-btn">Source</a>
@@ -535,8 +537,8 @@
             // CJ- Set the title of the marker
             title: "Your Location",
             icon: {
-                url: "user.png",
-                scaledSize: new google.maps.Size(48, 48),
+              url: "user.png",
+              scaledSize: new google.maps.Size(48, 48),
             },
             animation: google.maps.Animation.DROP,
           });

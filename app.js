@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import crypto from 'crypto';
+import crypto from "crypto";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -27,20 +27,24 @@ app.listen(port, () => {
   console.log("Running on port ", port);
 });
 
-const algorithm = 'aes-256-ctr';
-const secretKey = '01dcfa406f6f7253d0a74c790987ff37c6866fa9226ad76cfe33373b9f3dd7af'; // replace with your 64-character secret key
+const algorithm = "aes-256-ctr";
+const secretKey =
+  "01dcfa406f6f7253d0a74c790987ff37c6866fa9226ad76cfe33373b9f3dd7af"; // replace with your 64-character secret key
 
 function decrypt(encryptedApiKey, secretKey) {
-    const key = Buffer.from(secretKey, 'hex');
-    const decipher = crypto.createDecipheriv(algorithm, key, Buffer.alloc(16));
-    const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedApiKey, 'hex')), decipher.final()]);
-    return decrypted.toString();
+  const key = Buffer.from(secretKey, "hex");
+  const decipher = crypto.createDecipheriv(algorithm, key, Buffer.alloc(16));
+  const decrypted = Buffer.concat([
+    decipher.update(Buffer.from(encryptedApiKey, "hex")),
+    decipher.final(),
+  ]);
+  return decrypted.toString();
 }
 
-app.post('/decrypt', (req, res) => {
-    const encryptedApiKey = req.body.encryptedApiKey;
-    const decryptedApiKey = decrypt(encryptedApiKey, secretKey);
-    res.json({ decryptedApiKey });
+app.post("/decrypt", (req, res) => {
+  const encryptedApiKey = req.body.encryptedApiKey;
+  const decryptedApiKey = decrypt(encryptedApiKey, secretKey);
+  res.json({ decryptedApiKey });
 });
 
 app.get("/", async (req, res) => {

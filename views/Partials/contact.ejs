@@ -18,13 +18,15 @@
         method: "POST",
         body: formData,
         headers: {
-          'Accept': 'application/json'
+          Accept: "application/json",
         },
       })
         .then((response) => response.json())
         .then((responseJson) => {
           if (responseJson.ok) {
-            alert("Your message has successfully been sent to our contact services!");
+            alert(
+              "Your message has successfully been sent to our contact services!"
+            );
             document.getElementById("email").value = "";
             document.getElementById("message").value = "";
           } else {
