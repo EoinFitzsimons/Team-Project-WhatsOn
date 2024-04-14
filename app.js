@@ -141,7 +141,7 @@ app.post("/users/register", async (req, res) => {
     users.push(newUser);
 
     // Generate JWT token
-    const token = jwt.sign({ email: newUser.email }, jwtSecretKey, { expiresIn: "1h" });
+    const token = jwt.sign({ email: newUser.email }, jwtSecret, { expiresIn: "1h" });
 
     // Write the updated users and token back to the file
     try {
@@ -203,7 +203,7 @@ app.post("/users/login", async (req, res) => {
   try {
     if (await bcrypt.compare(password, user.password)) {
       // If password matches, generate JWT token
-      const token = jwt.sign({ email: user.email }, jwtSecretKey, { expiresIn: "1h" });
+      const token = jwt.sign({ email: user.email }, jwtSecret, { expiresIn: "1h" });
       res.json({ success: true, token });
     } else {
       res.status(401).json({ success: false, message: "Incorrect password" });
