@@ -1,62 +1,40 @@
 <script>
-  //This is the script for the contact form
   function messageSent() {
-    // Get the values from the form
     var email = document.forms["contactForm"]["email"].value;
-    // var email = document.getElementById("email").value;
     var message = document.forms["contactForm"]["message"].value;
 
-    // Check if the email and message fields are empty
     if (email == "") {
-      // alert the user that they need to fill the email field
       alert("You need to fill the email field!");
-      // return false to prevent the form from being submitted
       return false;
-      // Check if the message field is empty
     } else if (message == "") {
-      // alert the user that they need to fill the message field
       alert("You need to fill the message field!");
-      // return false to prevent the form from being submitted
       return false;
-      // If the email and message fields are not empty
     } else {
       // Create a new FormData object from the form
       var formData = new FormData(document.getElementById("contactForm"));
 
       // Use fetch to send the form data to Formspree
       fetch("https://formspree.io/f/mayrlpzk", {
-        // Set the method to POST
         method: "POST",
-        // Set the body of the request to the form data
         body: formData,
-        // Set the headers to accept JSON
         headers: {
           'Accept': 'application/json'
         },
       })
-      // Parse the response as JSON
         .then((response) => response.json())
-        // Log the response to the console
         .then((responseJson) => {
-          // If the response is ok
           if (responseJson.ok) {
-            // Alert the user that the message was sent successfully
             alert("Your message has successfully been sent to our contact services!");
-            // Clear the email field
             document.getElementById("email").value = "";
-            //Clear the message field
             document.getElementById("message").value = "";
-            // If the response is not ok
           } else {
-            // Alert the user that there was an error sending the message
             alert("There was an error sending your message. Please try again.");
           }
         })
-        // Catch any errors and log them to the console
         .catch((error) => {
-          // Log the error to the console
           alert("There was an error sending your message. Please try again.");
         });
+
       // Prevent the form from being submitted normally
       return false;
     }

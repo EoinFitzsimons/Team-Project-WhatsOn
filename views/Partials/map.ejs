@@ -15,6 +15,9 @@
       streetViewControl: false,
     });
 
+    //CJ- TO-DO- array list storing "Dublin Events"
+    //CJ- TO-DO- inside FOR loop to iterate through array list and create markers/windows fro each event
+
     //CJ- Variable to keep track of the open info window
     let currentInfoWindow = null;
 
@@ -40,6 +43,179 @@
         currentInfoWindow = infowindow;
       };
     }
+
+    // CJ- creates new constant named marker to attach to event listener to open info window
+    // const marker1 = new google.maps.Marker({
+    //   // CJ- sets the location of marker
+    //   position: { lat: 53.34904445277732, lng: -6.2430142587188975 },
+    //   map,
+    //   //CJ- title of marker
+    //   title: "Education: Starting",
+    //   icon: {
+    //     // CJ- location of icon image
+    //     url: "EdS.png",
+    //     // CJ- new Google maps object that defines the size of icon image
+    //     scaledSize: new google.maps.Size(48, 48),
+    //   },
+    //   //CJ- animation that drops pin from top of the map
+    //   animation: google.maps.Animation.DROP,
+    // });
+
+    // //CJ- new info window object set to open when marker is clicked
+    // const infowindow1 = new google.maps.InfoWindow({
+    // // CJ- div class to style info window content
+    // content: `
+    //     <div class="info-window-content">
+    //     <h3>Education</h3>
+    //     <p>Status: Starting</p>
+    //     <p>Location: National College Of Ireland</p>
+    //     <p>Mayor Street Lower</p>
+    //     <p>Join us for an enlightening evening of knowledge and camaraderie.</p>
+    //     <p>Let's expand our horizons and make lasting memories together!</p>
+    //     </div>
+    // `
+    // });
+
+    // // CJ- event listener that opens info window when clicked click to open event window
+    // marker1.addListener("click", handleMarkerClick(marker1, infowindow1));
+
+    // const marker2 = new google.maps.Marker({
+    // position: { lat: 53.36013894903569, lng: -6.260932804848787 },
+    // map,
+    // title: "Social: Starting",
+    // icon: {
+    //     url: "SoS.png",
+    //     scaledSize: new google.maps.Size(48, 48),
+    // },
+    // animation: google.maps.Animation.DROP,
+    // });
+
+    // const infowindow2 = new google.maps.InfoWindow({
+    // content: `
+    //     <div class="info-window-content">
+    //     <h3>Social</h3>
+    //     <p>Status: Starting</p>
+    //     <p>Location: Dorset Street Lower</p>
+    //     <p>Dublin, DO1A2Y5</p>
+    //     <p>Join us for a fun-filled evening of laughter and entertainment. </p>
+    //     <p>Let's create unforgettable memories together!</p>
+    //     </div>
+    // `
+    // });
+
+    // // CJ- event listener that opens info window when clicked click to open event window
+    // marker2.addListener("click", handleMarkerClick(marker2, infowindow2));
+
+    //   const marker3 = new google.maps.Marker({
+    //     position: { lat: 53.355, lng: -6.26 },
+    //     map,
+    //     title: "Charity: Ending",
+    //     icon: {
+    //       url: "Che.png",
+    //       scaledSize: new google.maps.Size(48, 48),
+    //     },
+    //     animation: google.maps.Animation.DROP,
+    //   });
+
+    //   const infowindow3 = new google.maps.InfoWindow({
+    //     content: `
+    //   <div class="info-window-content">
+    //     <h3>Charity</h3>
+    //     <p>Status: Ending</p>
+    //     <p>Location: O'Connell Street Upper</p>
+    //     <p>Dublin, DO1A2Y5</p>
+    //     <p>Join us for a noble cause and make a difference in the world!</p>
+    //     </div>
+    //   `
+    //   });
+
+    // // CJ- event listener that opens info window when clicked click to open event window
+    // marker3.addListener("click", handleMarkerClick(marker3, infowindow3));
+
+    //   const marker4 = new google.maps.Marker({
+    //     position: { lat: 53.35, lng: -6.265 },
+    //     map,
+    //     title: "Culture: Ending",
+    //     icon: {
+    //       url: "CuE.png",
+    //       scaledSize: new google.maps.Size(48, 48),
+    //     },
+    //     animation: google.maps.Animation.DROP,
+    //   });
+
+    //   const infowindow4 = new google.maps.InfoWindow({
+    //     content: `
+    //   <div class="info-window-content">
+    //     <h3>Culture</h3>
+    //     <p>Status: Ending</p>
+    //     <p>Location: Temple Bar</p>
+    //     <p>Dublin, DO1A2Y5</p>
+    //     <p>Experience the rich cultural heritage and immerse yourself in the arts!</p>
+    //     </div>
+    //   `
+    //   });
+
+    // // CJ- event listener that opens info window when clicked click to open event window
+    // marker4.addListener("click", handleMarkerClick(marker4, infowindow4));
+
+    //   const marker5 = new google.maps.Marker({
+    //   position: { lat: 53.355, lng: -6.255 },
+    //   map,
+    //   title: "Sports: Ongoing",
+    //   icon: {
+    //     url: "SpO.png",
+    //     scaledSize: new google.maps.Size(48, 48),
+    //   },
+    //   animation: google.maps.Animation.DROP,
+    //   });
+
+    //   const infowindow5 = new google.maps.InfoWindow({
+    //     content: `
+    //   <div class="info-window-content">
+    //     <h3>Sports</h3>
+    //     <p>Status: Ongoing</p>
+    //     <p>Location: Croke Park</p>
+    //     <p>Dublin, DO1A2Y5</p>
+    //     <p>Come and witness the excitement of a thrilling sporting event!</p>
+    //     </div>
+    //   `
+    //   });
+
+    // // CJ- event listener that opens info window when clicked click to open event window
+    // marker5.addListener("click", handleMarkerClick(marker5, infowindow5));
+
+    //   const marker6 = new google.maps.Marker({
+    //   position: { lat: 53.360, lng: -6.255 },
+    //   map,
+    //   title: "Entertainment: Ongoing",
+    //   icon: {
+    //     url: "EnO.png",
+    //     scaledSize: new google.maps.Size(48, 48),
+    //   },
+    //   animation: google.maps.Animation.DROP,
+    //   });
+
+    //   const infowindow6 = new google.maps.InfoWindow({
+    //     content: `
+    //   <div class="info-window-content">
+    //     <h3>Sports</h3>
+    //     <p>Status: Ongoing</p>
+    //     <p>Location: Concert Hall</p>
+    //     <p>Dublin, DO1A2Y5</p>
+    //     <p>Experience the magic of live music and let the melodies transport you to another world!</p>
+    //     </div>
+    //   `
+    //   });
+
+    // // CJ- event listener that opens info window when clicked click to open event window
+    // marker6.addListener("click", handleMarkerClick(marker6, infowindow6));
+
+    // //CJ- click event listener added to the map to close the info window when the map is clicked
+    // map.addListener('click', function() {
+    // if (currentInfoWindow) {
+    //     currentInfoWindow.close();
+    // }
+    // });
 
     //CJ- Dynamic JSON data for markers and info windows
     //CJ- Function to get the icon URL based on the event type
@@ -384,3 +560,33 @@
     }
   }
 </script>
+<!-- CJ- using env variable to store API key, must be implemented on render website-->
+<!-- <script> const key = env.mapApiKey; console.log(key); </script> -->
+
+<!-- CJ- Solution to hiding key -->
+<!-- <script>
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&map_ids=13185b1ffbbba3af&callback=initMap`;
+  document.body.appendChild(script);
+</script> -->
+
+<!-- CJ- loading map API & Map ID, after script because of callback function in URL that connects to initMap function -->
+
+<!-- davey attempt -->
+<!-- <script>
+  fetch('/api-key')
+      .then(response => response.json())
+      .then(data => {
+        // data is the JSON object received from the server
+        const apiKey = data.apiKey;
+        // Now you can use apiKey in your client-side code
+        const script = document.createElement('script');
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${AIzaSyClOptqTJtbgqusnHIRbB4RzaS0OsoC2ic}&map_ids=13185b1ffbbba3af&callback=initMap`;
+          script.defer = true;
+          script.async = true;
+          document.head.appendChild(script);
+      })
+      .catch(error => console.error('Error:', error));
+
+</script> -->

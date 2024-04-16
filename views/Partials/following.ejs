@@ -1,15 +1,9 @@
 <script>
-  // Define a function to handle the form submission
   var isSignupMode = true;
-  // Define a function to handle the form submission
   var isLoggedIn = false;
-  // Define a function to handle the form submission
   var users = {};
-  // Define a function to handle the form submission
   var userEmail = null;
-  // Define a function to handle the form submission
   function followingButtonClicked() {
-    // Check if the user is logged in
     if (isLoggedIn) {
       // User is logged in, show following
       toggleModal("followingModal", event);
@@ -18,134 +12,85 @@
       toggleModal("userModal", event);
     }
   }
-  // Define a function to handle the switch mode button
   function switchMode() {
-    // Get the form, submit button, and switch button
     var form = document.getElementById("authForm");
     var submitButton = document.getElementById("submit");
     var switchButton = document.getElementById("switchMode");
 
-    // Check if the form is in signup mode
     if (isSignupMode) {
-      // Change the form action to login
       form.setAttribute("action", "/users/login");
-      // Change the submit button value to login
       submitButton.setAttribute("value", "Login");
-      // Change the switch button text to switch to signup
       switchButton.textContent = "Switch to Sign Up";
     } else {
-      // Change the form action to signup
       form.setAttribute("action", "/users/register");
-      // Change the submit button value to signup
       submitButton.setAttribute("value", "Sign Up");
-      // Change the switch button text to switch to login
       switchButton.textContent = "Switch to Login";
     }
-    // Toggle the isSignupMode variable
+
     isSignupMode = !isSignupMode;
   }
 
   //will work along side with backend code to check if the users log in details are correct and will take the message from the backend and display it to the user onb
   function handleFormSubmit(event) {
-    // Get the form dat// Prevent the form from submitting normallya
-    event.preventDefault();
-    // Get the email and password from the form
+    event.preventDefault(); // Prevent the form from submitting normally
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
 
-    // Check if the form is in login mode
     if (!isSignupMode) {
-      // Set the url to the login route
       var url = "/users/login";
 
-      // Set the url to the register route
       fetch(url, {
-        // Set the method to POST
         method: "POST",
-        // Set the headers to accept JSON
         headers: {
-          // Set the content type to application/json
           "Content-Type": "application/json",
         },
-        // Set the body of the request to the email and password
         body: JSON.stringify({ email: email, password: password }),
       })
-      // Parse the response as JSON
         .then((response) => response.json())
-        // Log the response to the console
         .then((data) => {
-          // If the response is successful
           if (data.success) {
-            // Alert the user that the login was successful
             alert("Login successful!");
-            // Set the user email to the email
             userEmail = email;
-            // Set the user as logged in
             isLoggedIn = true;
-            // Close all modals
             closeAllModals();
-            // If the response is not successful
           } else {
-            // Alert the user that the login was unsuccessful
             alert(data.message);
           }
         })
-        // Catch any errors and log them to the console
         .catch((error) => {
-          // Log the error to the console
           console.error("Error:", error);
         });
     } else {
-      // Set the url to the register route
       var url = "/users/register";
-      
-      // Set the url to the register route
+
       fetch(url, {
-        // Set the method to POST
         method: "POST",
-        // Set the headers to accept JSON
         headers: {
           "Content-Type": "application/json",
         },
-        // Set the body of the request to the email and password
         body: JSON.stringify({ email: email, password: password }),
       })
-      // Parse the response as JSON
         .then((response) => response.json())
-        // Log the response to the console
         .then((data) => {
-          // If the response is successful
           if (data.success) {
-            // Alert the user that the account was created successfully
             alert("Account created successfully!");
-            // Set the user email to the email
             isLoggedIn = true;
-            // Set the user as logged in
             closeAllModals();
-            // If the response is not successful
           } else {
-            // Alert the user that the account creation was unsuccessful
             alert(data.message);
           }
         })
-        // Catch any errors and log them to the console
         .catch((error) => {
-          // Log the error to the console
           console.error("Error:", error);
         });
     }
   }
-  // Define a function to handle the form submission
+
   fetch("/isLoggedIn")
-  //  Parse the response as JSON
     .then((response) => response.json())
-    // Log the response to the console
     .then((data) => {
-      // Set the user email to the email
       isLoggedIn = data.isLoggedIn;
-      //  Get the follow button
       var followButton = document.getElementById("followButton");
-      // Check if the user is logged in
       if (isLoggedIn) {
         // User is logged in, show the button
         followButton.style.display = "block";
@@ -154,37 +99,24 @@
         followButton.style.display = "none";
       }
     });
-  // Define a function to handle the form submission
   function follow(eventData) {
-    // Get the user email
     const email = userEmail;
-    // Get the group name and link
     const groupName = eventData.groupName;
-    // Get the user email
     const groupLink = eventData.groupLink;
 
-    // Use fetch to send the form data to the server
     fetch("/followGroup", {
-      // Set the method to POST
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      // Set the body of the request to the form data
       body: JSON.stringify({ email, groupName, groupLink }),
     })
-    // Parse the response as JSON
       .then((response) => response.json())
-      // Log the response to the console
       .then((data) => {
-        // If the response is successful
         if (data.success) {
-          // Alert the user that the group has been followed
           console.log("The group has been followed!");
 
-          // Get the followed groups list
           const followedGroupsList =
-          // Get the followed groups list
             document.getElementById("followedGroupsList");
 
           // Create a new li element
@@ -195,30 +127,19 @@
 
           // Append the new li element to the ul
           followedGroupsList.appendChild(newGroup);
-          // If the response is not successful
         } else {
-          // Alert the user that the group is already being followed
           console.log("The user is already following this group.");
         }
       })
-      // Catch any errors and log them to the console
       .catch((error) => {
         console.error("Error:", error);
-        // Log the error to the console
       })
-      // Prevent the form from submitting normally
       .finally(() => {
-        // Get the followed groups list
         const followedGroupsList =
-        // Get the followed groups list
           document.getElementById("followedGroupsList");
-          // Get the followed groups list
         if (!followedGroupsList.hasChildNodes()) {
-          // Create a new li element
           const noGroupsMessage = document.createElement("li");
-          // Set the text of the new li element to the group name
           noGroupsMessage.textContent = "Not following any groups";
-          // Append the new li element to the ul
           followedGroupsList.appendChild(noGroupsMessage);
         }
       });

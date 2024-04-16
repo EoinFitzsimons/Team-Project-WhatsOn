@@ -1,30 +1,16 @@
-// Description: This file is the main entry point for the application. It sets up the server and listens for incoming requests.
-//importing the express library
 import express from "express";
-//importing the morgan library
 import morgan from "morgan";
-//importing the fetchData function from the fetchData.js file
 import fetchData from "./Data Fetching/fetchData.js";
-//importing the fs library
 import fs from "fs";
-//importing the path library
 import bcrypt from "bcrypt";
-//importing the body-parser library
 import bodyParser from "body-parser";
-//importing the path library
 import path from "path";
-//importing the url library
 import { fileURLToPath } from "url";
-//importing the crypto library
 import crypto from "crypto";
-//importing the fs library
 const __filename = fileURLToPath(import.meta.url);
-//importing the fs library
 const __dirname = path.dirname(__filename);
 
-//creating a new express application
 const app = express();
-//setting the port to 3000
 const port = process.env.PORT || 3000;
 
 app.set("view engine", "ejs"); // this calls for the ejs libary
@@ -37,35 +23,24 @@ app.use(express.static("Data Fetching")); //CJ- loads all of the static files fr
 app.use(bodyParser.json());
 app.use(express.json()); //this is used to parse the json data
 
-//this is used to create a session
 app.listen(port, () => {
-  //this is used to listen for the port
   console.log("Running on port ", port);
 });
-//this is used to create a session
+
 const algorithm = "aes-256-ctr";
-//this is used to create a session
 const secretKey =
   "e497a267700bf5bba32f5984d6bc07e7077ac4c9e26efef61a115ee4084417fc"; // replace with your 64-character secret key
 
-//this is used to create a session
 function decrypt(encryptedApiKey, secretKey) {
-  //this is used to buffer the key
   const key = Buffer.from(secretKey, "hex");
-  //this is used to create a decipher
   const decipher = crypto.createDecipheriv(algorithm, key, Buffer.alloc(16));
-  //this is used to decrypt the api key
   const decrypted = Buffer.concat([
-    //this is used to update the api key
     decipher.update(Buffer.from(encryptedApiKey, "hex")),
-    //this is used to finalize the api key
     decipher.final(),
   ]);
-  //this is used to return the decrypted api key
   return decrypted.toString();
 }
 
-//this is used to create a session and decrypt the api key
 app.post("/decrypt", (req, res) => {
   const encryptedApiKey = req.body.encryptedApiKey;
   const decryptedApiKey = decrypt(encryptedApiKey, secretKey);
@@ -85,11 +60,8 @@ app.get("/", async (req, res) => {
   }
 });
 
-//this is used to get users from the users.json file
 app.get("/users", (req, res) => {
-  // array to store the users
   let users = [];
-  // Read users from the file
   try {
     const fileContent = fs.readFileSync(
       path.join(__dirname, "User Details", "users.json"),
@@ -105,17 +77,12 @@ app.get("/users", (req, res) => {
   res.json(users);
 });
 
-//this is used to get the followed groups from the followedGroups.json file
 app.post("/users/register", async (req, res) => {
   try {
-    // Hash the password
     const salt = await bcrypt.genSalt();
-    // body parser is used to parse the data from the front end
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    //this is used to log the salt and hashed password
     console.log(salt);
     console.log(hashedPassword);
-    //this is used to create a new user
     const newUser = { email: req.body.email, password: hashedPassword };
 
     let users = [];
@@ -177,7 +144,7 @@ app.post("/users/register", async (req, res) => {
   }
   res.json({ success: true, message: "Account created successfully." });
 });
-//this is used to get the followed groups from the followedGroups.json file
+
 app.post("/users/login", async (req, res) => {
   let users;
   try {
@@ -209,7 +176,6 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
-//this is used to get the the logged in users from the users array
 app.get("/isLoggedIn", (req, res) => {
   if (req.session && req.session.userEmail) {
     // Read users from the file
@@ -236,7 +202,6 @@ app.get("/isLoggedIn", (req, res) => {
   }
 });
 
-//this is used to get the followed group
 app.post("/followGroup", (req, res) => {
   const { userEmail, groupName, groupLink } = req.body;
   console.log(

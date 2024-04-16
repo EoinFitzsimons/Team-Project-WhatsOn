@@ -1,8 +1,10 @@
 # Team Project
- Authors: Eoin Fitzsimons | Conor Judge | David O'Connor
+ This will contain all of our progress for the team project
 
-To run this application you will need to type into the terminal the following:
-npm install
-npx nodemon app
 
-To view this applicationin the browser you will need to enter an encoded API key to run Google Maps
+https://trello.com/b/maGItaKQ/team-project-edc
+Authors: Eoin Fitzsimons | Conor Judge | David O'Connor
+
+
+Legacy Code (We have moved away from these ideas but it is important to represent our progress)
+

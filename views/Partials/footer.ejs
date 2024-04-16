@@ -1,45 +1,28 @@
 <footer>
   <script>
-    // Function to load the Google Maps API
     window.onload = function () {
-      // Prompt the user for the encoded API key
       const encodedApiKey = window.prompt("Hey Julie. Please enter the Encoded API Key. It's in the 4th page of the Technical Report. Above the Executive Summary:", "");
       // Now you can decode the API key
       fetch("/decrypt", {
-        // Set the method to POST
         method: "POST",
-        // Set the headers to accept JSON
         headers: {
-          // Set the content type to application/json
           "Content-Type": "application/json",
         },
-        // Set the body of the request to the encoded API key
         body: JSON.stringify({ encryptedApiKey: encodedApiKey }),
       })
-      // Parse the response as JSON
         .then((response) => response.json())
-        // Log the response to the console
         .then((data) => {
-          // Get the decoded API key
           const apiKey = data.decryptedApiKey;
           // Now you can use the decoded API key in your application
           loadGoogleMaps(apiKey);
-          // Log the decoded API key to the console
         })
-        // Catch any errors and log them to the console
         .catch((error) => console.error("Error:", error));
     };
 
-    // Function to load the Google Maps API
     function loadGoogleMaps(apiKey) {
-      // Create a new script element
       const script = document.createElement("script");
-      // Set the source of the script to the Google Maps API
-      // Include the API key and the callback function
       script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&map_ids=13185b1ffbbba3af&callback=initMap`;
-      // Set the script to async
       script.async = true;
-      // Append the script to the body of the document
       document.body.appendChild(script);
     }
 
@@ -47,34 +30,26 @@
     // Variable to store the currently open modal
     var currentModal = null;
 
-    // Function to toggle the modal
     function toggleModal(modalId, event) {
       // If a modal is currently open, close it
       if (currentModal) {
-        //  Close the current modal
         currentModal.style.display = "none";
       }
 
       // Open the new modal
       currentModal = document.getElementById(modalId);
-      //  Set the display style to block
       currentModal.style.display = "block";
       // Check if the screen width is 750px or less
       if (window.innerHeight > window.innerWidth) {
-        // Set the display style to block
         currentModal.style.display = "block";
-        // Set the position to fixed
-        currentModal.style.position = "fixed";
-        // Center the modal vertically
+        currentModal.style.position = "fixed"; // Set position to fixed
+        // Center the modal vertically and horizontally
         currentModal.style.top = "50%";
-        // Center the modal horizontally
         currentModal.style.left = "50%";
-        // Translate the modal to center it
         currentModal.style.transform = "translate(-50%, -50%)";
       } else {
         // Get the position of the button
         var button = event.target;
-        // Get the position of the button
         var rect = button.getBoundingClientRect();
 
         // Account for the border
@@ -85,7 +60,6 @@
 
         // Center the modal horizontally
         currentModal.style.left = "50%";
-        // Slide the modal down to its final position below the button
         currentModal.style.transform = "translateX(-50%)";
 
         // Slide the modal down to its final position below the button
@@ -114,13 +88,10 @@
       }
     }
 
-    // Variable to store the currently open info window
     window.addEventListener("resize", function () {
-      // If a modal is currently open, close it
       if (currentModal) {
         // Get the position of the button
         var button = event.target;
-        // Get the position of the button
         var rect = button.getBoundingClientRect();
 
         // Position the modal above the viewport
@@ -128,7 +99,6 @@
 
         // Center the modal horizontally
         currentModal.style.left = "50%";
-        // Slide the modal down to its final position below the button
         currentModal.style.transform = "translateX(-50%)";
 
         // If the modal extends off the right edge of the screen, move it back
@@ -140,31 +110,21 @@
 
         // Slide the modal down to its final position below the button
         var finalTop = rect.bottom + window.scrollY - 15;
-        // If it's the legend modal, adjust the finalTop
         var currentTop = parseInt(currentModal.style.top);
-        // Slide the modal down to its final position below the button
         var intervalId = setInterval(function () {
-          // If the modal is not at its final position
           if (currentTop < finalTop) {
-            // Move the modal down
             currentTop += 2;
-            // Set the top style of the modal
             currentModal.style.top = currentTop + "px";
-          // If the modal is at its final position
           } else {
-            // Clear the interval
             clearInterval(intervalId);
           }
         }, 3); // Adjust this value to change the speed of the animation
       }
     });
-    // Variable to store the currently open info window
+
     function closeAllModals() {
-      // Get all the modals on the page
       var modals = document.getElementsByClassName("modal");
-      // Close all the modals
       for (var i = 0; i < modals.length; i++) {
-        // Set the display style to none
         modals[i].style.display = "none";
       }
       // Reset the currently open modal
