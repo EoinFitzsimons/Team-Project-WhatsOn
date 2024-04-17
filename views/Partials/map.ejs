@@ -1,6 +1,8 @@
 <script>
   //CJ- Variable to keep track of the open info window
   let currentInfoWindow = null;
+  //CJ- array to store events for random button
+  let events = [];
   //  CJ- using callback function “initMap” from Google Map Script API URL.  This ensures the javascript will only run once the API has finished loading, otherwise it would run before map exists.
   function initMap() {
     // <!-- CJ- targeting "map-div" to load map -->
@@ -143,8 +145,6 @@
       //CJ- return the icon URL
       return icon.src;
     }
-    //CJ- array to store events for random button
-    let events = [];
 
     //CJ- Multiple Markers with Info Windows from JSON Data
     fetch("/eventsData.json")
@@ -254,8 +254,10 @@
                     }" target="_blank" class="source-btn">Source</a>
                     <a href="#" id="follow-btn-${
                       eventData.eventId
-                    }" onclick="event.preventDefault(); follow(${eventData});" class="follow-btn" 
-            }">Follow</a> </div>
+                    }" onclick="event.preventDefault(); handleFollowClick(${
+              eventData.eventId
+            });" class="follow-btn">Follow</a>
+            </div>
                 </div>
             `,
           });
@@ -400,4 +402,78 @@
       console.error("Geolocation is not supported by this browser.");
     }
   }
+  function handleFollowClick(eventId) {
+  // Get the event data for the current event
+  const eventData = events.find((event) => event.eventId === eventId);
+  console.log('Event data:', eventData); // Log the event data
+
+  // Call the 'follow' function with the event data
+  follow(eventData);
+}
+
+function follow(eventData) {
+  // Get the user email
+  const email = userEmail;
+  // Get the group name and link
+  const groupName = eventData.groupName;
+  const groupLink = eventData.groupLink;
+
+  console.log('Group name:', groupName); // Log the group name
+  console.log('Group link:', groupLink); // Log the group link
+
+  // Use fetch to send the form data to the server
+  fetch("/followGroup", {
+    // Set the method to POST
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // Set the body of the request to the form data
+    body: JSON.stringify({ email, groupName, groupLink }),
+  })
+    // Parse the response as JSON
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Server response:', data); // Log the server response
+
+      // If the response is successful
+      if (data.success) {
+        // Alert the user that the group has been followed
+        console.log("The group has been followed!");
+
+        // Get the followed groups list
+        const followedGroupsList =
+          document.getElementById("followedGroupsList");
+
+        // Check if the followed groups list is empty
+        if (!followedGroupsList.hasChildNodes()) {
+          // Create a new li element
+          const noGroupsMessage = document.createElement("li");
+
+          // Set the text of the new li element
+          noGroupsMessage.textContent = "Not following any groups";
+
+          // Append the new li element to the ul
+          followedGroupsList.appendChild(noGroupsMessage);
+        }
+
+        // Create a new li element
+        const newGroup = document.createElement("li");
+
+        // Set the text of the new li element to the group name
+        newGroup.textContent = groupName;
+
+        // Append the new li element to the ul
+        followedGroupsList.appendChild(newGroup);
+      } else {
+        // Alert the user that the group is already being followed
+        console.log("The user is already following this group.");
+      }
+    })
+    // Catch any errors and log them to the console
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
 </script>

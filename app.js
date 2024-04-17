@@ -37,11 +37,7 @@ app.use(express.static("Data Fetching")); //CJ- loads all of the static files fr
 app.use(bodyParser.json());
 app.use(express.json()); //this is used to parse the json data
 
-//this is used to create a session
-app.listen(port, () => {
-  //this is used to listen for the port
-  console.log("Running on port ", port);
-});
+
 //this is used to create a session
 const algorithm = "aes-256-ctr";
 //this is used to create a session
@@ -185,6 +181,8 @@ app.post("/users/register", async (req, res) => {
 });
 //this is used to get the followed groups from the followedGroups.json file
 app.post("/users/login", async (req, res) => {
+  console.log("Login route called. Request body:", req.body);
+
   let users;
   try {
     const fileContent = fs.readFileSync(
@@ -192,51 +190,71 @@ app.post("/users/login", async (req, res) => {
       "utf8"
     );
     users = JSON.parse(fileContent);
+    console.log("Users data read from file:", users);
   } catch (error) {
-    console.error(error);
+    console.error("Error reading users file:", error);
     res.status(500).send("Cannot find users file");
     return;
   }
+
   const user = users.find((user) => user.email === req.body.email);
+  console.log("User found in file:", user);
+
   if (user == null) {
     return res.status(400).send("Cannot find user");
   }
+
   try {
     if (await bcrypt.compare(req.body.password, user.password)) {
-      res.json({ success: true });
+      console.log("Password match. Setting session userEmail:", user.email);
       req.session.userEmail = user.email;
+      console.log("Session after setting userEmail:", req.session);
+      res.json({ success: true });
     } else {
+      console.log("Password incorrect for user:", user.email);
       res.json({ success: false, message: "Password incorrect" });
     }
-  } catch {
+  } catch (error) {
+    console.error("Error during password comparison:", error);
     res
       .status(500)
-      .send({ success: false, message: "An error occured during login" });
+      .send({ success: false, message: "An error occurred during login" });
   }
 });
+
 app.get("/isLoggedIn", (req, res) => {
+  console.log('Checking if user is logged in...');
+  console.log(`req.session: ${JSON.stringify(req.session)}`);
+  
   if (req.session && req.session.userEmail) {
+    console.log(`User is logged in with email: ${req.session.userEmail}`);
+    
     // Read users from the file
     fs.readFile(
       path.join(__dirname, "User Details", "users.json"),
       "utf8",
       (error, fileContent) => {
         if (error) {
-          console.error(error);
+          console.error('Error reading users file:', error);
           return res.status(500).send();
         }
+        
         const users = JSON.parse(fileContent);
         // Filter users by the logged in email
         const accounts = users.filter(
           (user) => user.email === req.session.userEmail
         );
+        
+        console.log(`Found ${accounts.length} accounts for this user.`);
         return res.json({ isLoggedIn: true, accounts });
       }
     );
   } else {
+    console.log('User is not logged in.');
     return res.json({ isLoggedIn: false });
   }
 });
+
 
 //this is used to get the followed group
 app.post("/followGroup", (req, res) => {
@@ -286,4 +304,9 @@ app.post("/followGroup", (req, res) => {
 app.use((req, res) => {
   //this is used to direct the user to the 404 page if the page they are looking for does not exist
   res.status(404).render("404", { title: "404 Page" });
+});
+//this is used to create a session
+app.listen(port, () => {
+  //this is used to listen for the port
+  console.log("Running on port ", port);
 });
