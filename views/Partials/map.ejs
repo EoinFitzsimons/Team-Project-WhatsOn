@@ -1,4 +1,6 @@
 <script>
+  //CJ- Variable to keep track of the open info window
+  let currentInfoWindow = null;
   //  CJ- using callback function “initMap” from Google Map Script API URL.  This ensures the javascript will only run once the API has finished loading, otherwise it would run before map exists.
   function initMap() {
     // <!-- CJ- targeting "map-div" to load map -->
@@ -14,9 +16,6 @@
       fullscreenControl: false,
       streetViewControl: false,
     });
-
-    //CJ- Variable to keep track of the open info window
-    let currentInfoWindow = null;
 
     //CJ- variable to keep track of the current filter
     var currentFilter = null;
@@ -255,11 +254,29 @@
                     }" target="_blank" class="source-btn">Source</a>
                     <a href="#" id="follow-btn-${
                       eventData.eventId
-                    }" onclick="event.preventDefault(); follow(${eventData});" class="follow-btn" style="${
-              isLoggedIn ? "display: inline;" : "display: none;"
+                    }" onclick="event.preventDefault(); follow(${eventData});" class="follow-btn" 
             }">Follow</a> </div>
                 </div>
             `,
+          });
+          // Add a listener for the 'domready' event
+          google.maps.event.addListener(infowindow, "domready", function () {
+            //CJ- Get the follow button for the event
+            var followButton = document.getElementById(
+              "follow-btn-" + eventData.eventId
+            );
+            // Check the login status and update the button display
+            fetch("/isLoggedIn")
+              .then((response) => response.json())
+              .then((data) => {
+                isLoggedIn = data.isLoggedIn;
+                console.log(`Login status: ${isLoggedIn}`);
+                if (isLoggedIn) {
+                  followButton.style.display = "block";
+                } else {
+                  followButton.style.display = "none";
+                }
+              });
           });
           //CJ- moves marker and info window to events array
           events.push({

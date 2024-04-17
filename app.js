@@ -21,7 +21,7 @@ import crypto from "crypto";
 const __filename = fileURLToPath(import.meta.url);
 //importing the fs library
 const __dirname = path.dirname(__filename);
-
+import session from "express-session";
 //creating a new express application
 const app = express();
 //setting the port to 3000
@@ -64,7 +64,14 @@ function decrypt(encryptedApiKey, secretKey) {
   //this is used to return the decrypted api key
   return decrypted.toString();
 }
-
+app.use(
+  session({
+    secret: "a",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // set to true if your using https
+  })
+);
 //this is used to create a session and decrypt the api key
 app.post("/decrypt", (req, res) => {
   const encryptedApiKey = req.body.encryptedApiKey;
@@ -151,7 +158,6 @@ app.post("/users/register", async (req, res) => {
     }
     // Add the new user
     users.push(newUser);
-
     // Write the updated users back to the file
     try {
       fs.writeFileSync(
@@ -192,13 +198,13 @@ app.post("/users/login", async (req, res) => {
     return;
   }
   const user = users.find((user) => user.email === req.body.email);
-
   if (user == null) {
     return res.status(400).send("Cannot find user");
   }
   try {
     if (await bcrypt.compare(req.body.password, user.password)) {
       res.json({ success: true });
+      req.session.userEmail = user.email;
     } else {
       res.json({ success: false, message: "Password incorrect" });
     }
@@ -208,31 +214,27 @@ app.post("/users/login", async (req, res) => {
       .send({ success: false, message: "An error occured during login" });
   }
 });
-
-//this is used to get the the logged in users from the users array
 app.get("/isLoggedIn", (req, res) => {
   if (req.session && req.session.userEmail) {
     // Read users from the file
-    let users = [];
-    try {
-      const fileContent = fs.readFileSync(
-        path.join(__dirname, "User Details", "users.json"),
-        "utf8"
-      );
-      users = JSON.parse(fileContent);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send();
-      return;
-    }
-
-    // Filter users by the logged in email
-    const accounts = users.filter(
-      (user) => user.email === req.session.userEmail
+    fs.readFile(
+      path.join(__dirname, "User Details", "users.json"),
+      "utf8",
+      (error, fileContent) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send();
+        }
+        const users = JSON.parse(fileContent);
+        // Filter users by the logged in email
+        const accounts = users.filter(
+          (user) => user.email === req.session.userEmail
+        );
+        return res.json({ isLoggedIn: true, accounts });
+      }
     );
-    res.json({ isLoggedIn: true, accounts });
   } else {
-    res.json({ isLoggedIn: false });
+    return res.json({ isLoggedIn: false });
   }
 });
 
