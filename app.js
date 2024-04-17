@@ -129,7 +129,7 @@ app.post("/users/register", async (req, res) => {
         path.join(__dirname, "User Details", "users.json"),
         "utf8"
       );
-      users = JSON.parse(fileContent);
+      users = fileContent ? JSON.parse(fileContent) : [];
       if (!Array.isArray(users)) {
         users = [];
       }
