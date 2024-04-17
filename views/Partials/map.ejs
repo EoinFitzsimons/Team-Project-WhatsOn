@@ -3,8 +3,6 @@
   let currentInfoWindow = null;
   //CJ- array to store events for random button
   let events = [];
-  //CJ- Variable to store the event data
-  let globalEventData;
   //  CJ- using callback function “initMap” from Google Map Script API URL.  This ensures the javascript will only run once the API has finished loading, otherwise it would run before map exists.
   function initMap() {
     // <!-- CJ- targeting "map-div" to load map -->
@@ -150,30 +148,29 @@
 
     //CJ- Multiple Markers with Info Windows from JSON Data
     fetch("/eventsData.json")
-      //CJ- convert data to JSON
       .then((response) => response.json())
-      //CJ- log data to console
       .then((data) => {
-        //CJ- store data in global variable
-        globalEventData = data;
-        //CJ- loop through data array
-        data.forEach((eventData, index) => {
-          //CJ- create new marker for event
+        const clonedEventData = JSON.parse(JSON.stringify(data));
+        clonedEventData.forEach((eventData, index) => {
           const marker = new google.maps.Marker({
-            //CJ- set position of marker to event location
             position: { lat: eventData.lat, lng: eventData.lon },
             map,
-            //CJ- set title of marker to event name
             title: eventData.eventName,
             icon: {
               url: getIconUrl(eventData.eventType, eventData.eventTime),
               scaledSize: new google.maps.Size(48, 48),
             },
-            //CJ- set animation to drop from top of map
             animation: google.maps.Animation.DROP,
-            //CJ- add eventType property to marker
             eventType: eventData.eventType,
             groupLink: eventData.groupLink,
+            groupName: eventData.groupName,
+          });
+
+          // Add a click event listener to each marker
+          marker.addListener("click", function () {
+            // Here, 'this' refers to the marker instance that was clicked
+            console.log(this.title); // This will log the title of the clicked marker
+            // Add your code to handle the click event here
           });
 
           //CJ- Add the marker to the markers array
@@ -258,13 +255,84 @@
                         }" target="_blank" class="source-btn">Source</a>
                         <a href="#" id="follow-btn-${
                           eventData.eventId
-                        }" onclick="event.preventDefault(); handleFollowClick(${
-              eventData.eventId
-            });" class="follow-btn">Follow</a>
+                        }" onclick="event.preventDefault(); handleFollowClick('${
+              eventData.eventName
+            }');" class="follow-btn">Follow</a>
                 </div>
                     </div>
                 `,
           });
+
+          // When calling the follow function
+          window.handleFollowClick = function (eventName) {
+            const selectedEvent = Object.values(clonedEventData).find(
+              (event) => event.eventName === eventName
+            );
+            follow(selectedEvent);
+          };
+          function follow(event) {
+            // Fix the function parameter name conflict
+            // Get the user email
+            const email = userEmail;
+            // Get the group name and link
+            const groupName = event.groupName; // Fix the variable name
+            const groupLink = event.groupLink; // Fix the variable name
+
+            console.log(`Group name: ${groupName}`); // Log the group name
+            console.log(`Group link: ${groupLink}`); // Log the group link
+
+            // Use fetch to send the form data to the server
+            fetch("/followGroup", {
+              // Set the method to POST
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              // Set the body of the request to the form data
+              body: JSON.stringify({ email, groupName, groupLink }),
+            })
+              // Parse the response as JSON
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("Server response:", data); // Log the server response
+                // If the response is successful
+                if (data.success) {
+                  // Alert the user that the group has been followed
+                  console.log("The group has been followed!");
+                  // Get the followed groups list
+                  const followedGroupsList =
+                    document.getElementById("followedGroupsList");
+                  // Check if the followed groups list is empty
+                  if (!followedGroupsList.hasChildNodes()) {
+                    // Create a new li element
+                    const noGroupsMessage = document.createElement("li");
+                    // Set the text of the new li element
+                    noGroupsMessage.textContent = "Not following any groups";
+                    // Append the new li element to the ul
+                    followedGroupsList.appendChild(noGroupsMessage);
+                  }
+                  // Create a new li element
+                  const newGroup = document.createElement("li");
+                  // Create a new anchor element
+                  const groupLinkElement = document.createElement("a");
+                  // Set the href of the anchor element to the group link
+                  groupLinkElement.href = groupLink;
+                  // Set the text of the anchor element to the group name
+                  groupLinkElement.textContent = groupName;
+                  // Append the anchor element to the li element
+                  newGroup.appendChild(groupLinkElement);
+                  // Append the new li element to the ul
+                  followedGroupsList.appendChild(newGroup);
+                } else {
+                  // Alert the user that the group is already being followed
+                  console.log("The user is already following this group.");
+                }
+              })
+              // Catch any errors and log them to the console
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          }
           // Add a listener for the 'domready' event
           google.maps.event.addListener(infowindow, "domready", function () {
             //CJ- Get the follow button for the event
@@ -409,89 +477,5 @@
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
-  }
-  function handleFollowClick(eventId) {
-    // Get the event data for the current event
-    const eventData = globalEventData.find(
-      (event) => event.eventId === eventId
-    );
-    console.log("Event data:", eventData); // Log the event data
-
-    // Call the 'follow' function with the event data
-    follow(eventData);
-  }
-
-  function follow(eventData) {
-    // Get the user email
-    const email = userEmail;
-    // Get the group name and link
-    const groupName = eventData.groupName;
-    const groupLink = eventData.groupLink;
-
-    console.log(`Group name: ${eventData.groupName}`); // Log the group name
-    console.log(`Group link: ${eventData.groupLink}`); // Log the group link
-
-    // Use fetch to send the form data to the server
-    fetch("/followGroup", {
-      // Set the method to POST
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // Set the body of the request to the form data
-      body: JSON.stringify({ email, groupName, groupLink }),
-    })
-      // Parse the response as JSON
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Server response:", data); // Log the server response
-
-        // If the response is successful
-        if (data.success) {
-          // Alert the user that the group has been followed
-          console.log("The group has been followed!");
-
-          // Get the followed groups list
-          const followedGroupsList =
-            document.getElementById("followedGroupsList");
-
-          // Check if the followed groups list is empty
-          if (!followedGroupsList.hasChildNodes()) {
-            // Create a new li element
-            const noGroupsMessage = document.createElement("li");
-
-            // Set the text of the new li element
-            noGroupsMessage.textContent = "Not following any groups";
-
-            // Append the new li element to the ul
-            followedGroupsList.appendChild(noGroupsMessage);
-          }
-
-          // Create a new li element
-          const newGroup = document.createElement("li");
-
-          // Create a new anchor element
-          const groupLinkElement = document.createElement("a");
-
-          // Set the href of the anchor element to the group link
-          groupLinkElement.href = groupLink;
-
-          // Set the text of the anchor element to the group name
-          groupLinkElement.textContent = groupName;
-
-          // Append the anchor element to the li element
-          newGroup.appendChild(groupLinkElement);
-
-          // Append the new li element to the ul
-          followedGroupsList.appendChild(newGroup);
-        } else {
-          // Alert the user that the group is already being followed
-          console.log("The user is already following this group.");
-        }
-      })
-      // Catch any errors and log them to the console
-      .catch((error) => {
-        console.error("Error:", error);
-      });
   }
 </script>
