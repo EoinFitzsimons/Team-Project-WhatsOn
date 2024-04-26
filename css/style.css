@@ -143,6 +143,20 @@
   margin-top: 10px;
   border-radius: 5px;
 }
+/*Follow button on event window*/
+.follow-btn {
+  background-color: white;
+  color: var(--clr-blue);
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 2px;
+  text-decoration: none;
+  width: -moz-fit-content; /* For Firefox */
+  width: fit-content; /* For other browsers */
+  margin-top: 10px;
+  border-radius: 5px;
+}
 
 /* CJ- directions button container */
 .btn-container {
@@ -441,6 +455,28 @@ textarea {
   /* Makes the input fields take up the full width of the form */
   border: 1px solid var(--clr-dark);
   border-radius: 5px;
+}
+
+
+#followingModal .modal-content {
+  background-color: var(--clr-white);
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid var(--clr-dark);
+  border-radius: 5px;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-height: 500px;
+  min-height: 200px;
+}
+
+#followingModal .modal-content h3 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+#followingModal .modal-content ul {
+  list-style-type: none;
+  padding-left: 0;
 }
 
 .legend-content img {

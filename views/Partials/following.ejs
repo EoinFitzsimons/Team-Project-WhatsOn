@@ -8,8 +8,9 @@
   // Define a function to handle the form submission
   var userEmail = null;
   // Define a function to handle the form submission
+  let followButton;
+  // Define a function to handle the form submission
   function followingButtonClicked() {
-    // Check if the user is logged in
     if (isLoggedIn) {
       // User is logged in, show following
       toggleModal("followingModal", event);
@@ -44,7 +45,7 @@
     // Toggle the isSignupMode variable
     isSignupMode = !isSignupMode;
   }
-
+  // Define a function to handle the form submission
   //will work along side with backend code to check if the users log in details are correct and will take the message from the backend and display it to the user onb
   function handleFormSubmit(event) {
     // Get the form dat// Prevent the form from submitting normallya
@@ -70,7 +71,7 @@
         // Set the body of the request to the email and password
         body: JSON.stringify({ email: email, password: password }),
       })
-      // Parse the response as JSON
+        // Parse the response as JSON
         .then((response) => response.json())
         // Log the response to the console
         .then((data) => {
@@ -98,7 +99,6 @@
     } else {
       // Set the url to the register route
       var url = "/users/register";
-      
       // Set the url to the register route
       fetch(url, {
         // Set the method to POST
@@ -110,7 +110,7 @@
         // Set the body of the request to the email and password
         body: JSON.stringify({ email: email, password: password }),
       })
-      // Parse the response as JSON
+        // Parse the response as JSON
         .then((response) => response.json())
         // Log the response to the console
         .then((data) => {
@@ -136,25 +136,6 @@
     }
   }
   // Define a function to handle the form submission
-  fetch("/isLoggedIn")
-  //  Parse the response as JSON
-    .then((response) => response.json())
-    // Log the response to the console
-    .then((data) => {
-      // Set the user email to the email
-      isLoggedIn = data.isLoggedIn;
-      //  Get the follow button
-      var followButton = document.getElementById("followButton");
-      // Check if the user is logged in
-      if (isLoggedIn) {
-        // User is logged in, show the button
-        followButton.style.display = "block";
-      } else {
-        // User is not logged in, hide the button
-        followButton.style.display = "none";
-      }
-    });
-  // Define a function to handle the form submission
   function follow(eventData) {
     // Get the user email
     const email = userEmail;
@@ -173,9 +154,8 @@
       // Set the body of the request to the form data
       body: JSON.stringify({ email, groupName, groupLink }),
     })
-    // Parse the response as JSON
+      // Parse the response as JSON
       .then((response) => response.json())
-      // Log the response to the console
       .then((data) => {
         // If the response is successful
         if (data.success) {
@@ -184,7 +164,6 @@
 
           // Get the followed groups list
           const followedGroupsList =
-          // Get the followed groups list
             document.getElementById("followedGroupsList");
 
           // Create a new li element
@@ -195,32 +174,28 @@
 
           // Append the new li element to the ul
           followedGroupsList.appendChild(newGroup);
-          // If the response is not successful
         } else {
           // Alert the user that the group is already being followed
           console.log("The user is already following this group.");
+        }
+
+        // Check if the followed groups list is empty
+        const followedGroupsList =
+          document.getElementById("followedGroupsList");
+        if (!followedGroupsList.hasChildNodes()) {
+          // Create a new li element
+          const noGroupsMessage = document.createElement("li");
+
+          // Set the text of the new li element to the group name
+          noGroupsMessage.textContent = "Not following any groups";
+
+          // Append the new li element to the ul
+          followedGroupsList.appendChild(noGroupsMessage);
         }
       })
       // Catch any errors and log them to the console
       .catch((error) => {
         console.error("Error:", error);
-        // Log the error to the console
-      })
-      // Prevent the form from submitting normally
-      .finally(() => {
-        // Get the followed groups list
-        const followedGroupsList =
-        // Get the followed groups list
-          document.getElementById("followedGroupsList");
-          // Get the followed groups list
-        if (!followedGroupsList.hasChildNodes()) {
-          // Create a new li element
-          const noGroupsMessage = document.createElement("li");
-          // Set the text of the new li element to the group name
-          noGroupsMessage.textContent = "Not following any groups";
-          // Append the new li element to the ul
-          followedGroupsList.appendChild(noGroupsMessage);
-        }
       });
   }
 </script>
