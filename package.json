@@ -27,5 +27,8 @@
     "express-session": "^1.18.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.3"
+  },
+  "devDependencies": {
+    "cypress": "^13.8.1"
   }
 }

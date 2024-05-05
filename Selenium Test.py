@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.common.alert import Alert
+
 # Path to Edge WebDriver
 webdriver_service = Service('C:\\Users\\eoin0\\Downloads\\edgedriver_win64\\msedgedriver.exe')
 
@@ -29,7 +30,6 @@ alert.send_keys('9067dc23064fbdb794f79053211c2c4395c0d8bea8208194f8583ba42b8946d
 
 # Accept the prompt
 alert.accept()
-
 
 # Wait for 10 seconds
 time.sleep(10)
